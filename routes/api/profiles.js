@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
+const request = require("request");
 
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
@@ -22,6 +23,40 @@ router.get("/me", auth, async (req, res) => {
     if (!profile) {
       return res.status(400).json({ message: "No profile for this user." });
     }
+    return res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Database error");
+  }
+  res.send("Profiles get route");
+});
+
+/*
+  @route     GET api/profiles/github/:username
+  @desc      Gets github repositories for user with their github username
+  @access    Public
+ */
+
+router.get("/github/:username", async (req, res) => {
+  try {
+    const options = {
+      uri: encodeURI(
+        `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`
+      ),
+      method: "GET",
+      headers: { "user-agent": "node.js" }
+    };
+
+    request(options, (err, res, body) => {
+      if (err) {
+        console.err;
+      }
+      if (res.statusCode !== 200) {
+        res.status(404).json({ message: "Github profile not found" });
+      }
+      res.json(JSON.parse(body));
+    });
+
     return res.json(profile);
   } catch (err) {
     console.error(err.message);
