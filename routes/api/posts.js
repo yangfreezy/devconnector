@@ -70,12 +70,12 @@ router.put(
 );
 
 /*
-  @route     PUT api/posts/:post_id/uncomment/:comment_id
+  @route     DELETE api/posts/:post_id/comment/:comment_id
   @desc      Removes a comment on a post given the post id and comment id
   @access    Private
  */
 
-router.put("/:post_id/uncomment/:comment_id", auth, async (req, res) => {
+router.delete("/:post_id/comment/:comment_id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.post_id);
     if (!post) {
@@ -138,12 +138,12 @@ router.get("/:post_id", auth, async (req, res) => {
 });
 
 /*
-  @route     PUT api/posts/:post_id/unlike
+  @route     DELETE api/posts/:post_id/like
   @desc      Removes a like from a post
   @access    Private
  */
 
-router.put("/:post_id/unlike", auth, async (req, res) => {
+router.delete("/:post_id/like", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.post_id);
     if (!post) {
