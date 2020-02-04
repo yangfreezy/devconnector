@@ -16,7 +16,6 @@ module.exports = async function(req, res, next) {
           message: "Invalid token my friend."
         });
       } else {
-        console.log("decoded user", decoded);
         req.user = decoded.user ? decoded.user : decoded;
         return next();
       }
