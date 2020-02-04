@@ -83,7 +83,7 @@ router.put("/:post_id/uncomment/:comment_id", auth, async (req, res) => {
     }
     const user = await User.findById(req.user.id);
 
-    post.comments = await post.comments.filter(comment => {
+    post.comments = post.comments.filter(comment => {
       if (req.user.id === comment.user._id.toString()) {
         return comment._id.toString() !== req.params.comment_id;
       }
@@ -150,8 +150,9 @@ router.put("/:post_id/unlike", auth, async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
     post.likes = post.likes.filter(like => {
-      like.user.toString() == req.user.id;
+      return like.user._id.toString() !== req.user.id;
     });
+
     await post.save();
     return res.status(200).json({ message: "Like removed", post });
   } catch (err) {
