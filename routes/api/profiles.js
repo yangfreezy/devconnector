@@ -47,22 +47,20 @@ router.get("/github/:username", async (req, res) => {
       headers: { "user-agent": "node.js" }
     };
 
-    request(options, (err, res, body) => {
-      if (err) {
-        console.err;
+    const data = request(options, (error, response, body) => {
+      if (error) {
+        console.error(error);
       }
-      if (res.statusCode !== 200) {
-        res.status(404).json({ message: "Github profile not found" });
+      if (response.statusCode !== 200) {
+        return res.status(404).json({ message: "Github profile not found" });
       }
-      res.json(JSON.parse(body));
+      console.log(res);
+      return res.json(JSON.parse(body));
     });
-
-    return res.json(profile);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Database error");
   }
-  res.send("Profiles get route");
 });
 
 /*
